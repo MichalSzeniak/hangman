@@ -1,0 +1,8 @@
+.letters__box {
+    display: flex;
+    flex-direction: row;
+}
+
+.letter {
+    
+}
