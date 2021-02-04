@@ -1,11 +1,9 @@
 import React from 'react';
-import './Style/HiddenLetters.css';
+import './Style/HiddenLetters.scss';
 
 const HiddenLetters = ({ item }) => {
   return (
-    <div className="container">
-      <div class="letter">{item}</div>
-    </div>
+      <div className="letter">{item}</div>
   );
 };
 
