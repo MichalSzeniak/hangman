@@ -1,65 +1,100 @@
-import './App.css';
-import React, { useState } from 'react';
+import './App.scss';
+import React, { useState, useEffect } from 'react';
 import Header from './Components/Header';
-import HiddenLetters from './Components/HiddenLetters';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Gallows from './Components/Gallows';
 import GameOver from './Components/GameOver';
+import Win from './Win';
 
-const wordsList = ['potato', 'tomato'];
+const wordsList = ['potato', 'tomato', 'pasta', 'abcdef'];
 const hiddenWord =
   wordsList[Math.floor(Math.random() * (wordsList.length - 1 - 0 + 1))];
 
-const word = hiddenWord
-  .split('')
-  .map((item, i) => <HiddenLetters key={i} {...item} item={item} />);
-
 function App() {
   const [start, setStart] = useState(false);
-  const [goodLetter, setGoodLetter] = useState([]);
-  const [wrongLetter, setWrongLetter] = useState([]);
   const [gueses, setGueses] = useState([]);
-  const [counter, setCounter] = useState(0);
+  const [correctCounter, setCorrectCounter] = useState('');
+  const [wrongCounter, setWrongCounter] = useState(0);
   const [delay, setDelay] = useState(false);
+  const [word, setWord] = useState('');
+  const [time, setTime] = useState(0);
+
+
+  function removeDuplicateCharacters(string) {
+    return string
+      .split('')
+      .filter(function(item, pos, self) {
+        return self.indexOf(item) == pos;
+      })
+      .join('');
+  }
+  // console.log(removeDuplicateCharacters(word).length);
+
+
+  // const hiddenLetter = word
+  // .split('')
+  // .map((item, i) => <HiddenLetters key={i} {...item} item={item} />);
+
+  const guessesWord = word
+    .split('')
+    .map((letter) =>
+      gueses.includes(letter) ? (
+        <span className="letter">{letter}</span>
+      ) : (
+        <span className="letter"> _ </span>
+      ),
+    );
+
 
   const playAgain = () => {
-    setCounter(0);
+    setWrongCounter(0);
+    setTime(0);
+    setCorrectCounter('');
     setStart(false);
-    setGoodLetter([]);
-    setWrongLetter([]);
     setGueses([]);
     setDelay(false);
-  }
+    setStart(false);
+
+    setWord(
+      wordsList[Math.floor(Math.random() * (wordsList.length - 1 - 0 + 1))],
+    );
+  };
 
   const handleRandom = () => {
     setStart(true);
+    setCorrectCounter(0);
+    setTime(0);
+    setWord(
+      wordsList[Math.floor(Math.random() * (wordsList.length - 1 - 0 + 1))],
+    );
   };
 
-  // document.addEventListener('keydown', function (event) {
-  //   if(start) {
-  //   if (event.keyCode >= 65 && event.keyCode <= 90) {
-  //     // console.log(event.key);
-  //     if(hiddenWord.includes(event.key)) {
-  //       console.log(event.key)
-  //       setGoodLetters(goodLetters + event.key)
-  //     }
-  //   }
-  // }
-  // })
-
+  useEffect(() => {
+    if(start) {
+    const timer = setTimeout(() => {
+      setTime(time + 1)
+    }, 1000)}
+  }
+   )
 
 
   const test = (e) => {
     const letter = e.target.value;
-    setGueses((gueses) => gueses + letter)
-    if(!hiddenWord.includes(letter)) {
-      setWrongLetter(wrongLetter => wrongLetter + letter);
-      setCounter(counter + 1)
+
+    setGueses((gueses) => gueses + letter);
+    if (!word.includes(letter)) {
+      setWrongCounter(wrongCounter + 1);
     }
-    if(hiddenWord.includes(letter)) {
-      setGoodLetter(goodLetter => goodLetter + letter)
+    if (word.includes(letter)) {
+      setCorrectCounter(correctCounter + 1);
     }
-  };
+    }
+
+
+  // const guessesWord2 = () => {
+
+  // }
+
 
   const generateButtons = 'abcdefghijklmnopqrstuvwxyz'
     .split('')
@@ -69,17 +104,18 @@ function App() {
         className="btn btn-primary btn-lg m-1 "
         value={letter}
         onClick={test}
-        disabled={gueses.includes(letter)}
+        disabled={start ? gueses.includes(letter) : true}
       >
         {letter}
-      </button> 
+      </button>
     ));
 
-    if(counter >= 7 && delay == false) {
-      setTimeout(() => {
-        setDelay(true)
-      }, 500);
-    }
+  if (wrongCounter >= 7 && delay === false) {
+    setTimeout(() => {
+      setDelay(true);
+    }, 500);
+  }
+
 
 
   return (
@@ -88,19 +124,22 @@ function App() {
         <Header />
       </div>
       <div className="d-flex justify-content-center">
-      <Gallows counter={counter} />
+        <Gallows wrongCounter={wrongCounter} />
       </div>
-      {start === true && (
-        <div className="letters__box d-flex justify-content-center">{word}</div>
-      )}
-      <button className="btn btn-primary" onClick={handleRandom}>
-        Klik
-      </button>
+      <p className={start ? 'lettes active' : 'letters'}>{guessesWord}</p>
+      <div>
+        <button className="btn btn-primary" onClick={handleRandom}>
+          Start
+        </button>
+        <p>time: {time}</p>
+      </div>
+      <p>{word.includes()}</p>
       <p>{generateButtons}</p>
-      <p>wrong letters: {wrongLetter}</p>
+      {/* <p>wrong letters: {wrongLetter}</p>
       <p>good letters: {goodLetter}</p>
-      <p>counter: {counter}</p>
-      { delay && <GameOver hiddenWord={hiddenWord} playAgain={playAgain}/>}
+      <p>counter: {counter}</p> */}
+      {delay && <GameOver setTime={setTime} hiddenWord={hiddenWord} playAgain={playAgain} />}
+      {correctCounter === removeDuplicateCharacters(word).length && <Win /> }
     </div>
   );
 }

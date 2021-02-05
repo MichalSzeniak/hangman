@@ -1,7 +1,8 @@
 import React from 'react';
 import './Style/GameOverAlert.scss';
 
-const GameOver = ({ hiddenWord, playAgain }) => {
+const GameOver = ({setTime, hiddenWord, playAgain }) => {
+    setTime(0);
   return (
     <div className="p-3 mb-2 bg-primary container-fluid GameoverAlert">
       <div className="container text-center text-white mt-5">

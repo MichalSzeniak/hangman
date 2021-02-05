@@ -1,0 +1,21 @@
+.letters {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+}
+
+.active, .letters {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.letter {
+    margin : 8px;
+    font-size: 24px;
+}
